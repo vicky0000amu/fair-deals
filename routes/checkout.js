@@ -1,9 +1,12 @@
 // routes/checkout.js
 // Handles: Checkout page, Placing an order
+
+
+const express = require('express');
+
 const razorpay = require('../config/razorpay');
 const crypto = require('crypto');
 
-const express = require('express');
 const router = express.Router();
 const supabase = require('../config/supabase');
 const { requireLogin } = require('../middleware/auth');
@@ -33,7 +36,12 @@ router.get('/', requireLogin, async (req, res) => {
     return sum + (price * item.quantity);
   }, 0);
 
-  res.render('checkout', { total, error: null, user: req.user });
+  res.render('checkout', {
+  total,
+  error: null,
+  user: req.user,
+  RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID
+});
 });
 
 // ---------------------------------------------------------------
@@ -124,5 +132,201 @@ router.post('/', requireLogin, async (req, res) => {
 
   res.render('order-confirmation', { order });
 });
+
+// Create Razorpay Order
+router.post('/create-order', requireLogin, async (req, res) => {
+
+  const cart = ensureCart(req);
+
+  if (!cart.length) {
+    return res.status(400).json({
+      error: 'Cart is empty'
+    });
+  }
+
+  const productIds = cart.map(item => item.product_id);
+
+  const { data: products } = await supabase
+    .from('products')
+    .select('*')
+    .in('id', productIds);
+
+  let total = 0;
+
+  for (const item of cart) {
+
+    const product = products.find(
+      p => p.id === item.product_id
+    );
+
+    if (!product) continue;
+
+    const price =
+      product.sale_price || product.price;
+
+    total += price * item.quantity;
+  }
+
+  console.log("TOTAL =", total);
+
+const options = {
+  amount: Math.round(total * 100),
+  currency: 'INR',
+  receipt: `receipt_${Date.now()}`
+};
+
+  try {
+
+    const order =
+      await razorpay.orders.create(options);
+
+    res.json(order);  
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: 'Unable to create Razorpay order'
+    });
+  }
+});
+
+
+
+router.post('/verify-payment', requireLogin, async (req, res) => {
+
+  try {
+
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      shipping_name,
+      shipping_phone,
+      shipping_address
+    } = req.body;
+
+    const generatedSignature =
+      crypto
+      .createHmac(
+        'sha256',
+        process.env.RAZORPAY_KEY_SECRET
+      )
+      .update(
+        razorpay_order_id +
+        "|" +
+        razorpay_payment_id
+      )
+      .digest('hex');
+
+    if (
+      generatedSignature !==
+      razorpay_signature
+    ) {
+
+      return res.json({
+        success: false
+      });
+    }
+
+    const cart = ensureCart(req);
+
+    const productIds = cart.map(
+      item => item.product_id
+    );
+
+    const { data: products } =
+      await supabase
+      .from('products')
+      .select('*')
+      .in('id', productIds);
+
+    let total = 0;
+
+    const itemsToInsert = [];
+
+    for (const cartItem of cart) {
+
+      const product =
+        products.find(
+          p => p.id === cartItem.product_id
+        );
+
+      if (!product) continue;
+
+      const price =
+        product.sale_price || product.price;
+
+      total +=
+        price * cartItem.quantity;
+
+      itemsToInsert.push({
+        product_id: product.id,
+        product_name: product.name,
+        quantity: cartItem.quantity,
+        price
+      });
+    }
+
+    const { data: order } =
+      await supabase
+      .from('orders')
+      .insert([{
+        user_id: req.user.id,
+        total_amount: total,
+        status: 'paid',
+        payment_id: razorpay_payment_id,
+        payment_method: 'razorpay',
+        shipping_name,
+        shipping_phone,
+        shipping_address
+      }])
+      .select()
+      .single();
+
+    const orderItems =
+      itemsToInsert.map(item => ({
+        ...item,
+        order_id: order.id
+      }));
+
+    await supabase
+      .from('order_items')
+      .insert(orderItems);
+
+    req.session.cart = [];
+
+    res.json({
+      success: true
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.json({
+      success: false
+    });
+  }
+});
+
+router.get('/payment-success',
+  requireLogin,
+  (req, res) => {
+
+    res.render(
+      'order-confirmation',
+      {
+        order: {
+          id: 'PAID',
+          total_amount: 0,
+          order_items: []
+        }
+      }
+    );
+
+});
+
 
 module.exports = router;

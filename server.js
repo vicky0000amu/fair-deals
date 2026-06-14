@@ -20,6 +20,7 @@ const accountRoutes = require('./routes/account');
 const adminRoutes = require('./routes/admin');
 
 const app = express();
+app.locals.RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
 const PORT = process.env.PORT || 3000;
 
 // ---------------------------------------------------------------
