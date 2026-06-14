@@ -1,5 +1,7 @@
 // routes/checkout.js
 // Handles: Checkout page, Placing an order
+const razorpay = require('../config/razorpay');
+const crypto = require('crypto');
 
 const express = require('express');
 const router = express.Router();
