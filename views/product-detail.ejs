@@ -1,0 +1,36 @@
+<%- include('partials/header', { title: product.name }) %>
+
+<section class="section">
+  <% if (success) { %><div class="alert alert-success">Added to cart!</div><% } %>
+  <div class="product-detail">
+    <img src="<%= product.image_url %>" alt="<%= product.name %>">
+    <div class="product-detail-info">
+      <h1><%= product.name %></h1>
+      <div class="product-detail-price">
+  <% if (product.sale_price && Number(product.sale_price) > 0) { %>
+    <span class="old-price">Rs. <%= Number(product.price).toFixed(2) %></span>
+    Rs. <%= Number(product.sale_price).toFixed(2) %> INR
+  <% } else { %>
+    Rs. <%= Number(product.price).toFixed(2) %> INR
+  <% } %>
+</div>
+      <p class="product-detail-desc"><%= product.description %></p>
+
+      <% if (product.is_sold_out || product.stock <= 0) { %>
+        <p class="alert alert-error">This item is currently sold out.</p>
+      <% } else { %>
+        <form action="/cart/add" method="POST">
+          <input type="hidden" name="productId" value="<%= product.id %>">
+          <div class="qty-row">
+            <label for="quantity">Qty:</label>
+            <input type="number" id="quantity" name="quantity" value="1" min="1" max="<%= product.stock %>">
+          </div>
+          <button type="submit" class="btn btn-solid">Add to Cart</button>
+        </form>
+        <p style="margin-top:10px; color: var(--color-text-muted); font-size: 13px;"><%= product.stock %> in stock</p>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

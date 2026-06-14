@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title || 'Fair Deals' %> | Fair Deals</title>
+  <meta name="description" content="Fair Deals - Where Luxury Meets Legacy. Premium jewellery at unbeatable prices.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo">FAIR DEALS</a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/products">Catalog</a></li>
+          <li><a href="/collections">Collections</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <% if (user && user.is_admin) { %>
+            <li><a href="/admin">Admin</a></li>
+          <% } %>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <% if (user) { %>
+          <a href="/account/orders">My Orders</a>
+          <a href="/auth/logout">Logout</a>
+        <% } else { %>
+          <a href="/auth/login">Log in</a>
+        <% } %>
+        <a href="/cart">Cart<% if (cartCount && cartCount > 0) { %><span class="cart-count"><%= cartCount %></span><% } %></a>
+      </div>
+    </div>
+  </header>
+  <main>

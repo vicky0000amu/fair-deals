@@ -1,0 +1,53 @@
+<%- include('partials/header', { title: product ? 'Edit Product' : 'Add Product' }) %>
+
+<section class="section">
+  <div class="form-wrap" style="max-width: 600px;">
+    <h2><%= product ? 'Edit Product' : 'Add Product' %></h2>
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+    <form action="<%= product ? '/admin/products/' + product.id + '/edit' : '/admin/products/new' %>" method="POST">
+      <div class="form-group">
+        <label for="name">Product Name</label>
+        <input type="text" id="name" name="name" value="<%= product ? product.name : '' %>" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4"><%= product ? product.description : '' %></textarea>
+      </div>
+      <div class="form-group">
+        <label for="price">Price (INR)</label>
+        <input type="number" id="price" name="price" step="0.01" value="<%= product ? product.price : '' %>" required>
+      </div>
+      <div class="form-group">
+        <label for="sale_price">Sale Price (optional)</label>
+        <input type="number" id="sale_price" name="sale_price" step="0.01" value="<%= product && product.sale_price ? product.sale_price : '' %>">
+      </div>
+      <div class="form-group">
+        <label for="image_url">Image URL</label>
+        <input type="text" id="image_url" name="image_url" value="<%= product ? product.image_url : '' %>" required>
+      </div>
+      <div class="form-group">
+        <label for="stock">Stock Quantity</label>
+        <input type="number" id="stock" name="stock" value="<%= product ? product.stock : 0 %>" required>
+      </div>
+      <div class="form-group">
+        <label for="collection_id">Collection</label>
+        <select id="collection_id" name="collection_id">
+          <option value="">-- None --</option>
+          <% collections.forEach(function(c) { %>
+            <option value="<%= c.id %>" <%= (product && product.collection_id === c.id) ? 'selected' : '' %>><%= c.name %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="is_sold_out" value="true" style="width:auto; display:inline-block;" <%= (product && product.is_sold_out) ? 'checked' : '' %>>
+          Mark as Sold Out
+        </label>
+      </div>
+      <button type="submit" class="btn btn-solid btn-full"><%= product ? 'Update Product' : 'Add Product' %></button>
+    </form>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

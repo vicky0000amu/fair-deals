@@ -1,0 +1,30 @@
+<%- include('partials/header', { title: 'Create Account' }) %>
+
+<div class="form-wrap">
+  <h2>Create Account</h2>
+  <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+  <form action="/auth/register" method="POST">
+    <div class="form-group">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      <input type="text" id="phone" name="phone">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required minlength="6">
+    </div>
+    <button type="submit" class="btn btn-solid btn-full">Create Account</button>
+  </form>
+  <div class="form-footer-link">
+    Already have an account? <a href="/auth/login">Log in</a>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,44 @@
+<%- include('partials/header', { title: 'Manage Orders' }) %>
+
+<section class="section">
+  <h2 class="section-title">Manage Orders</h2>
+
+  <% if (orders.length === 0) { %>
+    <div class="empty-state"><h2>No orders yet</h2></div>
+  <% } else { %>
+    <% orders.forEach(function(order) { %>
+      <div class="order-card">
+        <div class="order-header">
+          <div>
+            <strong>Order #<%= order.id.slice(0,8) %></strong><br>
+            <span style="color: var(--color-text-muted);"><%= new Date(order.created_at).toLocaleString() %></span><br>
+            <span>Customer: <%= order.shipping_name %> | <%= order.shipping_phone %></span><br>
+            <span>Address: <%= order.shipping_address %></span>
+          </div>
+          <div>
+            <form action="/admin/orders/<%= order.id %>/status" method="POST" style="display:flex; gap:8px; align-items:center;">
+              <select name="status" class="form-group" style="background:#0d0d0d; color:#f5f5f0; border:1px solid var(--color-border); padding:8px;">
+                <% ['pending','paid','shipped','delivered','cancelled'].forEach(function(s) { %>
+                  <option value="<%= s %>" <%= order.status === s ? 'selected' : '' %>><%= s %></option>
+                <% }); %>
+              </select>
+              <button type="submit" class="btn">Update</button>
+            </form>
+          </div>
+        </div>
+        <% order.order_items.forEach(function(item) { %>
+          <div class="order-item-row">
+            <span><%= item.product_name %> x <%= item.quantity %></span>
+            <span>Rs. <%= (item.price * item.quantity).toFixed(2) %></span>
+          </div>
+        <% }); %>
+        <div class="order-item-row" style="margin-top:10px; padding-top:10px; border-top:1px solid var(--color-border); color: var(--color-gold); font-weight:600;">
+          <span>Total</span>
+          <span>Rs. <%= Number(order.total_amount).toFixed(2) %></span>
+        </div>
+      </div>
+    <% }); %>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>

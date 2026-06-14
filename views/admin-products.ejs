@@ -1,0 +1,42 @@
+<%- include('partials/header', { title: 'Manage Products' }) %>
+
+<section class="section">
+  <div class="admin-bar">
+    <h2 class="section-title" style="margin:0;">Manage Products</h2>
+    <a href="/admin/products/new" class="btn btn-solid">+ Add Product</a>
+  </div>
+
+  <% if (success) { %><div class="alert alert-success"><%= success %></div><% } %>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Sold Out</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% products.forEach(function(p) { %>
+        <tr>
+          <td><img src="<%= p.image_url %>" alt="" style="width:50px; height:50px; object-fit:cover;"></td>
+          <td><%= p.name %></td>
+          <td>Rs. <%= Number(p.price).toFixed(2) %></td>
+          <td><%= p.stock %></td>
+          <td><%= p.is_sold_out ? 'Yes' : 'No' %></td>
+          <td class="admin-actions">
+            <a href="/admin/products/<%= p.id %>/edit" class="btn">Edit</a>
+            <form action="/admin/products/<%= p.id %>/delete" method="POST" style="display:inline;" onsubmit="return confirm('Delete this product?');">
+              <button type="submit" class="remove-btn">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</section>
+
+<%- include('partials/footer') %>

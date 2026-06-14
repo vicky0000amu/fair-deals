@@ -1,0 +1,25 @@
+<%- include('partials/header', { title: 'Admin Dashboard' }) %>
+
+<section class="section">
+  <h2 class="section-title">Admin Dashboard</h2>
+  <div class="admin-bar">
+    <div>Welcome, <%= user.name %></div>
+  </div>
+
+  <div class="collections-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px,1fr));">
+    <a href="/admin/products" class="product-card" style="padding:30px; text-align:center;">
+      <h3 style="color: var(--color-gold-light); font-family: var(--font-heading);">Manage Products</h3>
+      <p style="margin-top:8px; color: var(--color-text-muted);">Add, edit or delete products</p>
+    </a>
+    <a href="/admin/orders" class="product-card" style="padding:30px; text-align:center;">
+      <h3 style="color: var(--color-gold-light); font-family: var(--font-heading);">Manage Orders</h3>
+      <p style="margin-top:8px; color: var(--color-text-muted);">View and update order status</p>
+    </a>
+    <a href="/admin/collections" class="product-card" style="padding:30px; text-align:center;">
+      <h3 style="color: var(--color-gold-light); font-family: var(--font-heading);">Manage Collections</h3>
+      <p style="margin-top:8px; color: var(--color-text-muted);">Add or edit collections</p>
+    </a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

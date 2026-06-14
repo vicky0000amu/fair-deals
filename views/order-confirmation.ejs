@@ -1,0 +1,15 @@
+<%- include('partials/header', { title: 'Order Placed' }) %>
+
+<section class="section">
+  <div class="empty-state">
+    <h2>Thank you for your order!</h2>
+    <p>Your order #<%= order.id.slice(0,8) %> has been placed successfully.</p>
+    <p>We will deliver to: <%= order.shipping_address %></p>
+    <p>Total: Rs. <%= Number(order.total_amount).toFixed(2) %></p>
+    <br>
+    <a href="/products" class="btn">Continue Shopping</a>
+    <a href="/account/orders" class="btn btn-solid">View My Orders</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

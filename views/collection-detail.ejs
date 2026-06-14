@@ -1,0 +1,27 @@
+<%- include('partials/header', { title: collection.name }) %>
+
+<section class="section">
+  <h2 class="section-title"><%= collection.name %></h2>
+  <p style="text-align:center; color: var(--color-text-muted); margin-bottom: 30px;"><%= collection.description %></p>
+
+  <% if (products.length === 0) { %>
+    <div class="empty-state">
+      <h2>No products in this collection yet</h2>
+    </div>
+  <% } else { %>
+    <div class="product-grid">
+      <% products.forEach(function(p) { %>
+        <a href="/products/<%= p.slug %>" class="product-card">
+          <% if (p.is_sold_out) { %><span class="sold-out-badge">Sold Out</span><% } %>
+          <img class="product-card-img" src="<%= p.image_url %>" alt="<%= p.name %>">
+          <div class="product-card-body">
+            <div class="product-card-title"><%= p.name %></div>
+            <div class="product-card-price">Rs. <%= Number(p.price).toFixed(2) %> INR</div>
+          </div>
+        </a>
+      <% }); %>
+    </div>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>

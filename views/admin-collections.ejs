@@ -1,0 +1,50 @@
+<%- include('partials/header', { title: 'Manage Collections' }) %>
+
+<section class="section">
+  <div class="admin-bar">
+    <h2 class="section-title" style="margin:0;">Manage Collections</h2>
+  </div>
+
+  <% if (success) { %><div class="alert alert-success"><%= success %></div><% } %>
+
+  <table class="admin-table" style="margin-bottom: 40px;">
+    <thead>
+      <tr><th>Image</th><th>Name</th><th>Slug</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <% collections.forEach(function(c) { %>
+        <tr>
+          <td><img src="<%= c.image_url %>" alt="" style="width:50px; height:50px; object-fit:cover;"></td>
+          <td><%= c.name %></td>
+          <td><%= c.slug %></td>
+          <td><%= c.description %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <div class="form-wrap" style="max-width:600px; margin: 0;">
+    <h2 style="font-size:20px;">Add New Collection</h2>
+    <form action="/admin/collections/new" method="POST">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="slug">Slug (used in URL, e.g. dual-aura)</label>
+        <input type="text" id="slug" name="slug" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="image_url">Image URL</label>
+        <input type="text" id="image_url" name="image_url" required>
+      </div>
+      <button type="submit" class="btn btn-solid btn-full">Add Collection</button>
+    </form>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

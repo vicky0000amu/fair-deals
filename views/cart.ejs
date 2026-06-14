@@ -1,0 +1,63 @@
+<%- include('partials/header', { title: 'Your Cart' }) %>
+
+<section class="section">
+  <h2 class="section-title">Your Cart</h2>
+
+  <% if (cartItems.length === 0) { %>
+    <div class="empty-state">
+      <h2>Your cart is empty</h2>
+      <p>Looks like you haven't added anything yet.</p>
+      <br>
+      <a href="/products" class="btn">Continue Shopping</a>
+    </div>
+  <% } else { %>
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% cartItems.forEach(function(item) { %>
+          <tr>
+            <td>
+              <div class="cart-item-info">
+                <img src="<%= item.image_url %>" alt="<%= item.name %>">
+                <span><%= item.name %></span>
+              </div>
+            </td>
+            <td>Rs. <%= Number(item.price).toFixed(2) %></td>
+            <td>
+              <form class="qty-form" action="/cart/update" method="POST">
+                <input type="hidden" name="productId" value="<%= item.product_id %>">
+                <input type="number" name="quantity" value="<%= item.quantity %>" min="1">
+                <button type="submit" class="btn">Update</button>
+              </form>
+            </td>
+            <td>Rs. <%= (item.price * item.quantity).toFixed(2) %></td>
+            <td>
+              <form action="/cart/remove" method="POST">
+                <input type="hidden" name="productId" value="<%= item.product_id %>">
+                <button type="submit" class="remove-btn">Remove</button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <div class="cart-summary">
+      <div class="cart-summary-row total">
+        <span>Total</span>
+        <span>Rs. <%= total.toFixed(2) %></span>
+      </div>
+      <a href="/checkout" class="btn btn-solid btn-full">Proceed to Checkout</a>
+    </div>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>

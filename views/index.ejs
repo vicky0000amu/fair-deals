@@ -1,0 +1,87 @@
+<%- include('partials/header', { title: 'Home' }) %>
+
+<section class="hero" style="background-image: url('https://fair-deals-4041.myshopify.com/cdn/shop/files/rn-image_picker_lib_temp_cef220dd-f42d-4682-b8c7-7c1720b14375.jpg');">
+  <div class="hero-content">
+    <h1>Pure Elegance</h1>
+    <p>Where Luxury Meets Legacy</p>
+    <a href="/products" class="btn">Shop Now</a>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Featured Collection</h2>
+
+  <div class="product-grid">
+    <% products.forEach(function(p) { %>
+
+      <a href="/products/<%= p.slug %>" class="product-card">
+
+        <% if (p.is_sold_out) { %>
+          <span class="sold-out-badge">Sold Out</span>
+        <% } %>
+
+        <img
+          class="product-card-img"
+          src="<%= p.image_url %>"
+          alt="<%= p.name %>"
+        >
+
+        <div class="product-card-body">
+
+          <div class="product-card-title">
+            <%= p.name %>
+          </div>
+
+          <div class="product-card-price">
+
+            <% if (p.sale_price && Number(p.sale_price) > 0) { %>
+
+              <span class="old-price">
+                Rs. <%= Number(p.price).toFixed(2) %>
+              </span>
+
+              Rs. <%= Number(p.sale_price).toFixed(2) %>
+
+            <% } else { %>
+
+              Rs. <%= Number(p.price).toFixed(2) %> INR
+
+            <% } %>
+
+          </div>
+
+        </div>
+
+      </a>
+
+    <% }); %>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Collections</h2>
+
+  <div class="collections-grid">
+
+    <% collections.forEach(function(c) { %>
+
+      <a href="/collections/<%= c.slug %>" class="collection-card">
+
+        <img
+          src="<%= c.image_url %>"
+          alt="<%= c.name %>"
+        >
+
+        <div class="collection-overlay">
+          <h3><%= c.name %></h3>
+          <p><%= c.description %></p>
+        </div>
+
+      </a>
+
+    <% }); %>
+
+  </div>
+</section>
+
+<%- include('partials/footer') %>
