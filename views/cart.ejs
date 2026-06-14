@@ -30,7 +30,10 @@
                 <span><%= item.name %></span>
               </div>
             </td>
-            <td>Rs. <%= Number(item.price).toFixed(2) %></td>
+            <td>
+  <strong>Price:</strong>
+  Rs. <%= Number(item.price).toFixed(2) %>
+</td>
             <td>
               <form class="qty-form" action="/cart/update" method="POST">
                 <input type="hidden" name="productId" value="<%= item.product_id %>">
@@ -38,7 +41,10 @@
                 <button type="submit" class="btn">Update</button>
               </form>
             </td>
-            <td>Rs. <%= (item.price * item.quantity).toFixed(2) %></td>
+            <td>
+  <strong>Subtotal:</strong>
+  Rs. <%= (item.price * item.quantity).toFixed(2) %>
+</td>
             <td>
               <form action="/cart/remove" method="POST">
                 <input type="hidden" name="productId" value="<%= item.product_id %>">
